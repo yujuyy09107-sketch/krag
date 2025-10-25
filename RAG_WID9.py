@@ -7,11 +7,14 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-# ✅ Streamlit Cloud용: Secrets에서 API 키 불러오기
-if "OPENAI_API_KEY" in st.secrets:
-    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+# ✅ Render에서는 st.secrets가 아니라 os.getenv()로 읽기
+openai_key = os.getenv("OPENAI_API_KEY")
+
+if openai_key:
+    os.environ["OPENAI_API_KEY"] = openai_key
+    st.success("✅ OpenAI API Key가 환경변수에서 성공적으로 로드되었습니다.")
 else:
-    st.error("❌ OpenAI API Key가 설정되지 않았습니다. Streamlit Secrets에 등록하세요.")
+    st.error("❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다. Render 설정을 확인하세요.")
     st.stop()
 
 
@@ -85,3 +88,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
